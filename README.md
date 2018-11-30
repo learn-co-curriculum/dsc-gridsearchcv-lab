@@ -44,16 +44,310 @@ Our data is stored in the file `winequality-red.csv`. Use pandas to import the d
 
 
 ```python
-df = None
+df = pd.read_csv('winequality-red.csv')
+df.head()
 ```
 
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>fixed acidity</th>
+      <th>volatile acidity</th>
+      <th>citric acid</th>
+      <th>residual sugar</th>
+      <th>chlorides</th>
+      <th>free sulfur dioxide</th>
+      <th>total sulfur dioxide</th>
+      <th>density</th>
+      <th>pH</th>
+      <th>sulphates</th>
+      <th>alcohol</th>
+      <th>quality</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>7.4</td>
+      <td>0.70</td>
+      <td>0.00</td>
+      <td>1.9</td>
+      <td>0.076</td>
+      <td>11.0</td>
+      <td>34.0</td>
+      <td>0.9978</td>
+      <td>3.51</td>
+      <td>0.56</td>
+      <td>9.4</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>7.8</td>
+      <td>0.88</td>
+      <td>0.00</td>
+      <td>2.6</td>
+      <td>0.098</td>
+      <td>25.0</td>
+      <td>67.0</td>
+      <td>0.9968</td>
+      <td>3.20</td>
+      <td>0.68</td>
+      <td>9.8</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>7.8</td>
+      <td>0.76</td>
+      <td>0.04</td>
+      <td>2.3</td>
+      <td>0.092</td>
+      <td>15.0</td>
+      <td>54.0</td>
+      <td>0.9970</td>
+      <td>3.26</td>
+      <td>0.65</td>
+      <td>9.8</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>11.2</td>
+      <td>0.28</td>
+      <td>0.56</td>
+      <td>1.9</td>
+      <td>0.075</td>
+      <td>17.0</td>
+      <td>60.0</td>
+      <td>0.9980</td>
+      <td>3.16</td>
+      <td>0.58</td>
+      <td>9.8</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>7.4</td>
+      <td>0.70</td>
+      <td>0.00</td>
+      <td>1.9</td>
+      <td>0.076</td>
+      <td>11.0</td>
+      <td>34.0</td>
+      <td>0.9978</td>
+      <td>3.51</td>
+      <td>0.56</td>
+      <td>9.4</td>
+      <td>5</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
 Great! Let's inspect our data a bit.  In the cell below, perform some basic Exploratory Data Analysis on our dataset.  Get a feel for your data by exploring the descriptive statistics and creating at least 1 visualization to help you better understand this dataset.
+
+
+```python
+display(df.describe())
+
+# Create a Box Whisker Plot of each column
+plt.figure(figsize=(20, 10))
+plt.boxplot([df[col] for col in df.columns])
+plt.title("Box Whisker Plot of Each Column in Dataset")
+plt.xticks(range(len(df.columns.values)), df.columns.values)
+plt.show()
+```
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>fixed acidity</th>
+      <th>volatile acidity</th>
+      <th>citric acid</th>
+      <th>residual sugar</th>
+      <th>chlorides</th>
+      <th>free sulfur dioxide</th>
+      <th>total sulfur dioxide</th>
+      <th>density</th>
+      <th>pH</th>
+      <th>sulphates</th>
+      <th>alcohol</th>
+      <th>quality</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>count</th>
+      <td>1599.000000</td>
+      <td>1599.000000</td>
+      <td>1599.000000</td>
+      <td>1599.000000</td>
+      <td>1599.000000</td>
+      <td>1599.000000</td>
+      <td>1599.000000</td>
+      <td>1599.000000</td>
+      <td>1599.000000</td>
+      <td>1599.000000</td>
+      <td>1599.000000</td>
+      <td>1599.000000</td>
+    </tr>
+    <tr>
+      <th>mean</th>
+      <td>8.319637</td>
+      <td>0.527821</td>
+      <td>0.270976</td>
+      <td>2.538806</td>
+      <td>0.087467</td>
+      <td>15.874922</td>
+      <td>46.467792</td>
+      <td>0.996747</td>
+      <td>3.311113</td>
+      <td>0.658149</td>
+      <td>10.422983</td>
+      <td>5.636023</td>
+    </tr>
+    <tr>
+      <th>std</th>
+      <td>1.741096</td>
+      <td>0.179060</td>
+      <td>0.194801</td>
+      <td>1.409928</td>
+      <td>0.047065</td>
+      <td>10.460157</td>
+      <td>32.895324</td>
+      <td>0.001887</td>
+      <td>0.154386</td>
+      <td>0.169507</td>
+      <td>1.065668</td>
+      <td>0.807569</td>
+    </tr>
+    <tr>
+      <th>min</th>
+      <td>4.600000</td>
+      <td>0.120000</td>
+      <td>0.000000</td>
+      <td>0.900000</td>
+      <td>0.012000</td>
+      <td>1.000000</td>
+      <td>6.000000</td>
+      <td>0.990070</td>
+      <td>2.740000</td>
+      <td>0.330000</td>
+      <td>8.400000</td>
+      <td>3.000000</td>
+    </tr>
+    <tr>
+      <th>25%</th>
+      <td>7.100000</td>
+      <td>0.390000</td>
+      <td>0.090000</td>
+      <td>1.900000</td>
+      <td>0.070000</td>
+      <td>7.000000</td>
+      <td>22.000000</td>
+      <td>0.995600</td>
+      <td>3.210000</td>
+      <td>0.550000</td>
+      <td>9.500000</td>
+      <td>5.000000</td>
+    </tr>
+    <tr>
+      <th>50%</th>
+      <td>7.900000</td>
+      <td>0.520000</td>
+      <td>0.260000</td>
+      <td>2.200000</td>
+      <td>0.079000</td>
+      <td>14.000000</td>
+      <td>38.000000</td>
+      <td>0.996750</td>
+      <td>3.310000</td>
+      <td>0.620000</td>
+      <td>10.200000</td>
+      <td>6.000000</td>
+    </tr>
+    <tr>
+      <th>75%</th>
+      <td>9.200000</td>
+      <td>0.640000</td>
+      <td>0.420000</td>
+      <td>2.600000</td>
+      <td>0.090000</td>
+      <td>21.000000</td>
+      <td>62.000000</td>
+      <td>0.997835</td>
+      <td>3.400000</td>
+      <td>0.730000</td>
+      <td>11.100000</td>
+      <td>6.000000</td>
+    </tr>
+    <tr>
+      <th>max</th>
+      <td>15.900000</td>
+      <td>1.580000</td>
+      <td>1.000000</td>
+      <td>15.500000</td>
+      <td>0.611000</td>
+      <td>72.000000</td>
+      <td>289.000000</td>
+      <td>1.003690</td>
+      <td>4.010000</td>
+      <td>2.000000</td>
+      <td>14.900000</td>
+      <td>8.000000</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+![png](index_files/index_5_1.png)
+
 
 **_Question:_** Based on your findings during your Eploratory Data Analysis, do you think that we need to do any sort of preprocessing on this dataset? Why or why not?
 
 Write your answer below this line:
 ________________________________________________________________________________________________________________________________
 
+Yes.  We don't need to worry about anything like null values, but we do need to normalize our dataset by scaling each variable. The reason we need to do this is because some columns have values that have much higher ranges than others.  In order for our model to be effective, we'll need to use normalize our data by subracting the column mean from every value and dividing by the column variance.  We do not need to do this manually--we can leverage preexisting functionality in sklearn for this task.  
 
 ### Preprocessing our Data
 
@@ -64,10 +358,121 @@ Now, we'll perform any necessary preprocessing on our dataset before training ou
 
 
 ```python
-labels = None
-labels_removed_df = None
-
+labels = df['quality']
+labels_removed_df = df.drop('quality', axis=1, inplace=False)
+labels_removed_df.head()
 ```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>fixed acidity</th>
+      <th>volatile acidity</th>
+      <th>citric acid</th>
+      <th>residual sugar</th>
+      <th>chlorides</th>
+      <th>free sulfur dioxide</th>
+      <th>total sulfur dioxide</th>
+      <th>density</th>
+      <th>pH</th>
+      <th>sulphates</th>
+      <th>alcohol</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>7.4</td>
+      <td>0.70</td>
+      <td>0.00</td>
+      <td>1.9</td>
+      <td>0.076</td>
+      <td>11.0</td>
+      <td>34.0</td>
+      <td>0.9978</td>
+      <td>3.51</td>
+      <td>0.56</td>
+      <td>9.4</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>7.8</td>
+      <td>0.88</td>
+      <td>0.00</td>
+      <td>2.6</td>
+      <td>0.098</td>
+      <td>25.0</td>
+      <td>67.0</td>
+      <td>0.9968</td>
+      <td>3.20</td>
+      <td>0.68</td>
+      <td>9.8</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>7.8</td>
+      <td>0.76</td>
+      <td>0.04</td>
+      <td>2.3</td>
+      <td>0.092</td>
+      <td>15.0</td>
+      <td>54.0</td>
+      <td>0.9970</td>
+      <td>3.26</td>
+      <td>0.65</td>
+      <td>9.8</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>11.2</td>
+      <td>0.28</td>
+      <td>0.56</td>
+      <td>1.9</td>
+      <td>0.075</td>
+      <td>17.0</td>
+      <td>60.0</td>
+      <td>0.9980</td>
+      <td>3.16</td>
+      <td>0.58</td>
+      <td>9.8</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>7.4</td>
+      <td>0.70</td>
+      <td>0.00</td>
+      <td>1.9</td>
+      <td>0.076</td>
+      <td>11.0</td>
+      <td>34.0</td>
+      <td>0.9978</td>
+      <td>3.51</td>
+      <td>0.56</td>
+      <td>9.4</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
 
 Now that we've isolated our labels, we'll need to normalize our dataset (also referred to as _scaling_).  
 
@@ -78,8 +483,8 @@ In the cell below:
 
 
 ```python
-scaler = None
-scaled_df = None
+scaler = StandardScaler()
+scaled_df = scaler.fit_transform(labels_removed_df)
 ```
 
 ### Training, Testing, and Cross Validation
@@ -97,12 +502,15 @@ In the cell below:
 
 
 ```python
-dt_clf = None
-dt_cv_score = None
-mean_dt_cv_score = None
+dt_clf = DecisionTreeClassifier()
+dt_cv_score = cross_val_score(dt_clf, scaled_df, labels, cv=3)
+mean_dt_cv_score = np.mean(dt_cv_score)
 
-# print("Mean Cross Validation Score: {:.4}%".format(mean_dt_cv_score * 100))
+print("Mean Cross Validation Score: {:.4}%".format(mean_dt_cv_score * 100))
 ```
+
+    Mean Cross Validation Score: 45.53%
+
 
 ## Grid Search: Decision Trees
 
@@ -111,7 +519,7 @@ Take a second to interpret the results of our cross-validation score.  How well 
 Write your answer below this line:
 ________________________________________________________________________________________________________________________________
 
-
+Our model did poorly overall, but still significantly better than we would expect from random guessing, which would have ~10% accuracy.  
 
 ### Creating A Parameter Grid
 
@@ -135,7 +543,10 @@ In the cell below:
 
 ```python
 dt_param_grid = {
- 
+    'criterion': ['gini', 'entropy'],
+    'max_depth': [None, 2, 3, 4, 5, 6],
+    'min_samples_split': [2, 5, 10],
+    'min_samples_leaf': [1, 2, 3, 4, 5, 6]
 }
 ```
 
@@ -149,12 +560,14 @@ Calculate and print your answer in the cell below.
 
 
 ```python
-num_decision_trees = None
+num_decision_trees = 3 * 2 * 6 * 3 * 6
 print("Grid Search will have to search through {} different permutations.".format(num_decision_trees))
 ```
 
-    Grid Search will have to search through None different permutations.
+    Grid Search will have to search through 648 different permutations.
 
+
+Expected Answer: 648
 
 That's alot of Decision Trees! Decision Trees are generally pretty quick to train, but that isn't the case with every type of model we could want to tune.  Be aware that if you set a particularly large search space of parameters inside your parameter grid, then Grid Searching could potentially take a very long time. 
 
@@ -165,9 +578,26 @@ Let's create our `GridSearchCV` object and fit it.  In the cell below:
 
 
 ```python
-dt_grid_search = None
-#dt_grid_search.fit(None, None)
+dt_grid_search = GridSearchCV(dt_clf, dt_param_grid, cv=3, return_train_score=True)
+dt_grid_search.fit(scaled_df, labels)
 ```
+
+
+
+
+    GridSearchCV(cv=3, error_score='raise',
+           estimator=DecisionTreeClassifier(class_weight=None, criterion='gini', max_depth=None,
+                max_features=None, max_leaf_nodes=None,
+                min_impurity_decrease=0.0, min_impurity_split=None,
+                min_samples_leaf=1, min_samples_split=2,
+                min_weight_fraction_leaf=0.0, presort=False, random_state=None,
+                splitter='best'),
+           fit_params=None, iid=True, n_jobs=1,
+           param_grid={'criterion': ['gini', 'entropy'], 'max_depth': [None, 2, 3, 4, 5, 6], 'min_samples_split': [2, 5, 10], 'min_samples_leaf': [1, 2, 3, 4, 5, 6]},
+           pre_dispatch='2*n_jobs', refit=True, return_train_score=True,
+           scoring=None, verbose=0)
+
+
 
 ### Examining the Best Parameters
 
@@ -183,18 +613,33 @@ In the cell below:
 
 
 ```python
-dt_gs_training_score = None
-dt_gs_testing_score = None
+dt_gs_training_score = np.mean(dt_grid_search.cv_results_['mean_train_score'])
+dt_gs_testing_score = dt_grid_search.score(scaled_df, labels)
 
-# print("Mean Training Score: {:.4}%".format(dt_gs_training_score * 100))
-# print("Mean Testing Score: {:.4}%".format(dt_gs_testing_score * 100))
-# print("Best Parameter Combination Found During Grid Search:")
-# dt_grid_search.best_params_
+print("Mean Training Score: {:.4}%".format(dt_gs_training_score * 100))
+print("Mean Testing Score: {:.4}%".format(dt_gs_testing_score * 100))
+print("Best Parameter Combination Found During Grid Search:")
+dt_grid_search.best_params_
 ```
+
+    Mean Training Score: 67.15%
+    Mean Testing Score: 66.04%
+    Best Parameter Combination Found During Grid Search:
+
+
+
+
+
+    {'criterion': 'gini',
+     'max_depth': 5,
+     'min_samples_leaf': 6,
+     'min_samples_split': 10}
+
+
 
 **_Question:_** What effect, if any, did our parameter tuning have on model performance? Will GridSearchCV always discover a perfectly (global) optimal set of parameters? Why or why not?
 ________________________________________________________________________________________________________________________________
-  
+The parameter tuning using GridSearchCV improved our model's performance by over 20%, from ~44% to ~66%.  The model also shows no signs of overfitting, as evidenced by the close training and testing scores.  Grid Search does not gaurantee that we will always find the globally optimal combination of parameter values, since it only exhaustively searches through the parameter values we provide, not every possible combination of every possible value for each parameter.  This means that the model is only as good as the possible combinations of the parameters we include in our parameter grid.  
 
 ### Tuning More Advanced Models: Random Forests
 
@@ -208,10 +653,14 @@ In the cell below:
 
 
 ```python
-rf_clf = None
-mean_rf_cv_score = None
-# print("Mean Cross Validation Score for Random Forest Classifier: {:.4}%".format(mean_rf_cv_score * 100))
+rf_clf = RandomForestClassifier()
+mean_rf_cv_score = np.mean(cross_val_score(rf_clf, scaled_df, labels, cv=3))
+
+print("Mean Cross Validation Score for Random Forest Classifier: {:.4}%".format(mean_rf_cv_score * 100))
 ```
+
+    Mean Cross Validation Score for Random Forest Classifier: 55.36%
+
 
 Now that we have our baseline score, we'll create a parameter grid specific to our Random Forest Classifier.  
 
@@ -229,6 +678,11 @@ Again--in a real world situation, you will need to decide what parameters to tun
 
 ```python
 rf_param_grid = {
+    'n_estimators': [10, 30, 100],
+    'criterion': ['gini', 'entropy'],
+    'max_depth': [None, 2, 6, 10],
+    'min_samples_split': [10, 20],
+    'min_samples_leaf': [1, 2, 5]
 }
 ```
 
@@ -249,14 +703,20 @@ When creating your `GridSearchCV` object,  pass in:
 ```python
 import time
 start = time.time()
-rf_grid_search =None
-# rf_grid_search.fit(None, None)
+rf_grid_search = GridSearchCV(rf_clf, rf_param_grid, cv=3)
+rf_grid_search.fit(scaled_df, labels)
 
-# print("Testing Accuracy: {:.4}%".format(rf_grid_search.best_score_ * 100))
-# print("Total Runtime for Grid Search on Random Forest Classifier: {:.4} seconds".format(time.time() - start))
-# print("")
-# print("Optimal Parameters: {}".format(rf_grid_search.best_params_))
+print("Testing Accuracy: {:.4}%".format(rf_grid_search.best_score_ * 100))
+print("Total Runtime for Grid Search on Random Forest Classifier: {:.4} seconds".format(time.time() - start))
+print("")
+print("Optimal Parameters: {}".format(rf_grid_search.best_params_))
 ```
+
+    Testing Accuracy: 58.97%
+    Total Runtime for Grid Search on Random Forest Classifier: 36.1 seconds
+    
+    Optimal Parameters: {'criterion': 'gini', 'max_depth': None, 'min_samples_leaf': 5, 'min_samples_split': 10, 'n_estimators': 100}
+
 
 ### Interpreting Our Results
 
@@ -265,6 +725,7 @@ Did tuning the hyperparameters of our Random Forest Classifier improve model per
 Write your answer below this line:
 ________________________________________________________________________________________________________________________________
 
+Parameter tuning improved performance marginally, by about 6%.  This is good, but still falls short of the top testing score of the Decision Tree Classifier by about 7%.  Which model to ship to production would depend on several factors, such as the overall goal, and how noisy the dataset is.  If the dataset is particularly noisy, the Random Forest model would likely be preferable, since the ensemble approach makes it more resistant to variance in the data.  If the data is fairly stable from batch to batch and not too noisy, or if higher accuracy had a disproportionate effect on our business goals, then I would go with the Decision Tree Classifier because it scored higher.  
 
 ### Tuning Gradient Boosted Trees (AdaBoost)
 
@@ -274,11 +735,14 @@ In the cell below, create an AdaBoost Classifier Object.  Then, as we did with t
 
 
 ```python
-adaboost_clf = None
-adaboost_mean_cv_score = None
+adaboost_clf = AdaBoostClassifier()
+adaboost_mean_cv_score = np.mean(cross_val_score(adaboost_clf, scaled_df, labels, cv=3))
 
-# print("Mean Cross Validation Score for AdaBoost: {:.4}%".format(adaboost_mean_cv_score * 100))
+print("Mean Cross Validation Score for AdaBoost: {:.4}%".format(adaboost_mean_cv_score * 100))
 ```
+
+    Mean Cross Validation Score for AdaBoost: 53.03%
+
 
 Great! Now, onto creating the parameter grid for AdaBoost.  
 
@@ -292,7 +756,8 @@ Complete the `adaboost_param_grid` dictionary by adding in the following key-val
 
 ```python
 adaboost_param_grid = {
-    
+    'n_estimators': [50, 100, 250],
+    'learning_rate': [1.0, 0.5, 0.1]
 }
 ```
 
@@ -300,14 +765,20 @@ Great.  Now, for the finale--use Grid Search to find optimal parameters for AdaB
 
 
 ```python
-adaboost_grid_search = None
-# adaboost_grid_search.fit(None, None)
+adaboost_grid_search = GridSearchCV(adaboost_clf, adaboost_param_grid, cv=3)
+adaboost_grid_search.fit(scaled_df, labels)
 
-# print("Testing Accuracy: {:.4}%".format(adaboost_grid_search.best_score_ * 100))
-# print("Total Runtime for Grid Search on AdaBoost: {:.4} seconds".format(time.time() - start))
-# print("")
-# print("Optimal Parameters: {}".format(adaboost_grid_search.best_params_))
+print("Testing Accuracy: {:.4}%".format(adaboost_grid_search.best_score_ * 100))
+print("Total Runtime for Grid Search on AdaBoost: {:.4} seconds".format(time.time() - start))
+print("")
+print("Optimal Parameters: {}".format(adaboost_grid_search.best_params_))
 ```
+
+    Testing Accuracy: 56.6%
+    Total Runtime for Grid Search on AdaBoost: 49.89 seconds
+    
+    Optimal Parameters: {'learning_rate': 0.1, 'n_estimators': 100}
+
 
 # Conclusion
 
