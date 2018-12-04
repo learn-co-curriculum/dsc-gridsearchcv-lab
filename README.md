@@ -1,9 +1,18 @@
 
-# Tuning Parameters With GridSearchCV
+# GridSearchCV - Lab
 
-## Objective
+## Introduction
 
 In this lab, we'll explore how to use scikit-learn's `GridSearchCV` class to exhaustively search through every combination hyperparameters until we find the values for a given model.
+
+## Objectives
+
+You will be able to:
+
+* Understand and explain parameter tuning and why it is necessary 
+* Design and create a parameter grid for use with sklearn's GridSearchCV module
+* Use GridSearchCV to increase model performance through parameter tuning
+
 
 ## The Dataset
 
@@ -780,7 +789,7 @@ print("Optimal Parameters: {}".format(adaboost_grid_search.best_params_))
     Optimal Parameters: {'learning_rate': 0.1, 'n_estimators': 100}
 
 
-# Conclusion
+## Summary
 
 In this lab, we learned:
 
