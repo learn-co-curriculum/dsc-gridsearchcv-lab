@@ -351,7 +351,7 @@ plt.show()
 ![png](index_files/index_5_1.png)
 
 
-**_Question:_** Based on your findings during your Eploratory Data Analysis, do you think that we need to do any sort of preprocessing on this dataset? Why or why not?
+**_Question:_** Based on your findings during your Exploratory Data Analysis, do you think that we need to do any sort of preprocessing on this dataset? Why or why not?
 
 Write your answer below this line:
 ________________________________________________________________________________________________________________________________
@@ -578,7 +578,7 @@ print("Grid Search will have to search through {} different permutations.".forma
 
 Expected Answer: 648
 
-That's alot of Decision Trees! Decision Trees are generally pretty quick to train, but that isn't the case with every type of model we could want to tune.  Be aware that if you set a particularly large search space of parameters inside your parameter grid, then Grid Searching could potentially take a very long time. 
+That's a lot of Decision Trees! Decision Trees are generally pretty quick to train, but that isn't the case with every type of model we could want to tune.  Be aware that if you set a particularly large search space of parameters inside your parameter grid, then Grid Searching could potentially take a very long time. 
 
 Let's create our `GridSearchCV` object and fit it.  In the cell below:
 * Create a `GridSearchCV` object.  Pass in our model, the parameter grid, and `cv=3` to tell the object to use 3-Fold Cross Validation. Also pass in `return`
@@ -615,7 +615,7 @@ Now that we have fit our model using Grid Search, we need to inspect it to disco
 In the cell below:
 
 * Calculate the the mean training score.  An array of training score results can be found inside of the `.cv_results_` dictionary, with the key `mean_train_score`.
-* Calcuate the testing score using the our grid search model's `.score()` method by passing in our data and labels. 
+* Calculate the testing score using the our grid search model's `.score()` method by passing in our data and labels. 
 * Examine the appropriate attribute to discover the best estimator parameters found during the grid search. 
 
 **_HINT:_** If you're unsure what attribute this is stored in, take a look at sklearn's [GridSearchCV Documentation](http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html).
