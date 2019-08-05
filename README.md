@@ -53,6 +53,11 @@ df = None
 
 Great! Let's inspect our data a bit.  In the cell below, perform some basic Exploratory Data Analysis on our dataset.  Get a feel for your data by exploring the descriptive statistics and creating at least 1 visualization to help you better understand this dataset.
 
+
+```python
+
+```
+
 **_Question:_** Based on your findings during your Exploratory Data Analysis, do you think that we need to do any sort of preprocessing on this dataset? Why or why not?
 
 Write your answer below this line:
@@ -112,10 +117,12 @@ mean_dt_cv_score = None
 
 Take a second to interpret the results of our cross-validation score.  How well did our model do? How does this compare to a naive baseline level of accuracy (random guessing)?
 
-Write your answer below this line:
-________________________________________________________________________________________________________________________________
+Write your answer below:
 
 
+```python
+# Your answer here
+```
 
 ### Creating A Parameter Grid
 
@@ -165,7 +172,6 @@ That's a lot of Decision Trees! Decision Trees are generally pretty quick to tra
 Let's create our `GridSearchCV` object and fit it.  In the cell below:
 * Create a `GridSearchCV` object.  Pass in our model, the parameter grid, and `cv=3` to tell the object to use 3-Fold Cross Validation. Also pass in `return`
 * Call our grid search object's `fit()` method and pass in our data and labels, just as if we were using regular cross validation.  
-* 
 
 
 ```python
@@ -197,8 +203,11 @@ dt_gs_testing_score = None
 ```
 
 **_Question:_** What effect, if any, did our parameter tuning have on model performance? Will GridSearchCV always discover a perfectly (global) optimal set of parameters? Why or why not?
-________________________________________________________________________________________________________________________________
-  
+
+
+```python
+# Your answer here
+```
 
 ### Tuning More Advanced Models: Random Forests
 
@@ -263,12 +272,12 @@ rf_grid_search =None
 ```
 
 ### Interpreting Our Results
+Did tuning the hyperparameters of our Random Forest Classifier improve model performance? Is this performance increase significant? Which model did better? If you had to choose, which model would you put into production? Explain your answer.
 
-Did tuning the hyperparameters of our Random Forest Classifier improve model performance? Is this performance increase significant? Which model did better? If you had to choose, which model would you put into production? Explain your answer. 
 
-Write your answer below this line:
-________________________________________________________________________________________________________________________________
-
+```python
+# Your answer here
+```
 
 ### Tuning Gradient Boosted Trees (AdaBoost)
 
