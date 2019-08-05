@@ -351,7 +351,6 @@ plt.show()
 Write your answer below this line:
 ________________________________________________________________________________________________________________________________
 
-Yes.  We don't need to worry about anything like null values, but we do need to normalize our dataset by scaling each variable. The reason we need to do this is because some columns have values that have much higher ranges than others.  In order for our model to be effective, we'll need to use normalize our data by subracting the column mean from every value and dividing by the column variance.  We do not need to do this manually--we can leverage preexisting functionality in sklearn for this task.  
 
 ### Preprocessing our Data
 
@@ -520,10 +519,15 @@ print("Mean Cross Validation Score: {:.4}%".format(mean_dt_cv_score * 100))
 
 Take a second to interpret the results of our cross-validation score.  How well did our model do? How does this compare to a naive baseline level of accuracy (random guessing)?
 
-Write your answer below this line:
-________________________________________________________________________________________________________________________________
+Write your answer below:
 
-Our model did poorly overall, but still significantly better than we would expect from random guessing, which would have ~10% accuracy.  
+
+```python
+"""
+Our model did poorly overall, but still significantly better than we 
+would expect from random guessing, which would have ~10% accuracy.
+"""
+```
 
 ### Creating A Parameter Grid
 
@@ -571,14 +575,11 @@ print("Grid Search will have to search through {} different permutations.".forma
     Grid Search will have to search through 648 different permutations.
 
 
-Expected Answer: 648
-
 That's a lot of Decision Trees! Decision Trees are generally pretty quick to train, but that isn't the case with every type of model we could want to tune.  Be aware that if you set a particularly large search space of parameters inside your parameter grid, then Grid Searching could potentially take a very long time. 
 
 Let's create our `GridSearchCV` object and fit it.  In the cell below:
 * Create a `GridSearchCV` object.  Pass in our model, the parameter grid, and `cv=3` to tell the object to use 3-Fold Cross Validation. Also pass in `return`
 * Call our grid search object's `fit()` method and pass in our data and labels, just as if we were using regular cross validation.  
-* 
 
 
 ```python
@@ -642,8 +643,21 @@ dt_grid_search.best_params_
 
 
 **_Question:_** What effect, if any, did our parameter tuning have on model performance? Will GridSearchCV always discover a perfectly (global) optimal set of parameters? Why or why not?
-________________________________________________________________________________________________________________________________
-The parameter tuning using GridSearchCV improved our model's performance by over 20%, from ~44% to ~66%.  The model also shows no signs of overfitting, as evidenced by the close training and testing scores.  Grid Search does not gaurantee that we will always find the globally optimal combination of parameter values, since it only exhaustively searches through the parameter values we provide, not every possible combination of every possible value for each parameter.  This means that the model is only as good as the possible combinations of the parameters we include in our parameter grid.  
+
+
+```python
+"""
+The parameter tuning using GridSearchCV improved our model's performance 
+by over 20%, from ~44% to ~66%. The model also shows no signs of 
+overfitting, as evidenced by the close training and testing scores. 
+Grid Search does not gaurantee that we will always find the globally 
+optimal combination of parameter values, since it only exhaustively 
+searches through the parameter values we provide, 
+not every possible combination of every possible value for each parameter. 
+This means that the model is only as good as the possible combinations of 
+the parameters we include in our parameter grid.
+"""
+```
 
 ### Tuning More Advanced Models: Random Forests
 
@@ -723,13 +737,23 @@ print("Optimal Parameters: {}".format(rf_grid_search.best_params_))
 
 
 ### Interpreting Our Results
+Did tuning the hyperparameters of our Random Forest Classifier improve model performance? Is this performance increase significant? Which model did better? If you had to choose, which model would you put into production? Explain your answer.
 
-Did tuning the hyperparameters of our Random Forest Classifier improve model performance? Is this performance increase significant? Which model did better? If you had to choose, which model would you put into production? Explain your answer. 
 
-Write your answer below this line:
-________________________________________________________________________________________________________________________________
-
-Parameter tuning improved performance marginally, by about 6%.  This is good, but still falls short of the top testing score of the Decision Tree Classifier by about 7%.  Which model to ship to production would depend on several factors, such as the overall goal, and how noisy the dataset is.  If the dataset is particularly noisy, the Random Forest model would likely be preferable, since the ensemble approach makes it more resistant to variance in the data.  If the data is fairly stable from batch to batch and not too noisy, or if higher accuracy had a disproportionate effect on our business goals, then I would go with the Decision Tree Classifier because it scored higher.  
+```python
+"""
+Parameter tuning improved performance marginally, by about 6%. 
+This is good, but still falls short of the top testing score of the 
+Decision Tree Classifier by about 7%. Which model to ship to production 
+would depend on several factors, such as the overall goal, and how 
+noisy the dataset is. If the dataset is particularly noisy, 
+the Random Forest model would likely be preferable, 
+since the ensemble approach makes it more resistant to variance in the data. 
+If the data is fairly stable from batch to batch and not too noisy, 
+or if higher accuracy had a disproportionate effect on our business goals, 
+then I would go with the Decision Tree Classifier because it scored higher.
+"""
+```
 
 ### Tuning Gradient Boosted Trees (AdaBoost)
 
