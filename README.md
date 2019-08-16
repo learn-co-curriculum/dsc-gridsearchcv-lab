@@ -36,7 +36,6 @@ import matplotlib.pyplot as plt
 %matplotlib inline
 import seaborn as sns
 from sklearn.model_selection import train_test_split, GridSearchCV, cross_val_score
-from sklearn.preprocessing import StandardScaler
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from sklearn.metrics import accuracy_score
@@ -52,11 +51,6 @@ df = None
 ```
 
 Great! Let's inspect our data a bit.  In the cell below, perform some basic Exploratory Data Analysis on our dataset.  Get a feel for your data by exploring the descriptive statistics and creating at least 1 visualization to help you better understand this dataset.
-
-
-```python
-
-```
 
 **_Question:_** Based on your findings during your Exploratory Data Analysis, do you think that we need to do any sort of preprocessing on this dataset? Why or why not?
 
@@ -78,22 +72,9 @@ labels_removed_df = None
 
 ```
 
-Now that we've isolated our labels, we'll need to normalize our dataset (also referred to as _scaling_).  
-
-In the cell below:
-
-* Create a `StandardScaler()` object.
-* Transform the data in `labels_removed_df` using the scaler object's `fit_transform()` method.
-
-
-```python
-scaler = None
-scaled_df = None
-```
-
 ### Training, Testing, and Cross Validation
 
-Normally, we would also split our data into training and testing sets.  However, since we'll be making use of **_Cross Validation_** when using `GridSearchCV`, we'll also want to make use of it with our baseline model to ensure that things are equal.  Recall that we do not need to split our data into training and testing sets when using cross validation, since the cross validation will take care of that for us.  
+Normally, we would split our data into training and testing sets.  However, since we'll be making use of **_Cross Validation_** when using `GridSearchCV`, we'll also want to make use of it with our baseline model to ensure that things are equal.  Recall that we do not need to split our data into training and testing sets when using cross validation, since the cross validation will take care of that for us.  
 
 ### Creating a Baseline Model: Decision Trees
 
