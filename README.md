@@ -36,7 +36,6 @@ import matplotlib.pyplot as plt
 %matplotlib inline
 import seaborn as sns
 from sklearn.model_selection import train_test_split, GridSearchCV, cross_val_score
-from sklearn.preprocessing import StandardScaler
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from sklearn.metrics import accuracy_score
@@ -477,22 +476,9 @@ labels_removed_df.head()
 
 
 
-Now that we've isolated our labels, we'll need to normalize our dataset (also referred to as _scaling_).  
-
-In the cell below:
-
-* Create a `StandardScaler()` object.
-* Transform the data in `labels_removed_df` using the scaler object's `fit_transform()` method.
-
-
-```python
-scaler = StandardScaler()
-scaled_df = scaler.fit_transform(labels_removed_df)
-```
-
 ### Training, Testing, and Cross Validation
 
-Normally, we would also split our data into training and testing sets.  However, since we'll be making use of **_Cross Validation_** when using `GridSearchCV`, we'll also want to make use of it with our baseline model to ensure that things are equal.  Recall that we do not need to split our data into training and testing sets when using cross validation, since the cross validation will take care of that for us.  
+Normally, we would split our data into training and testing sets.  However, since we'll be making use of **_Cross Validation_** when using `GridSearchCV`, we'll also want to make use of it with our baseline model to ensure that things are equal.  Recall that we do not need to split our data into training and testing sets when using cross validation, since the cross validation will take care of that for us.  
 
 ### Creating a Baseline Model: Decision Trees
 
@@ -506,13 +492,13 @@ In the cell below:
 
 ```python
 dt_clf = DecisionTreeClassifier()
-dt_cv_score = cross_val_score(dt_clf, scaled_df, labels, cv=3)
+dt_cv_score = cross_val_score(dt_clf, labels_removed_df, labels, cv=3)
 mean_dt_cv_score = np.mean(dt_cv_score)
 
 print("Mean Cross Validation Score: {:.4}%".format(mean_dt_cv_score * 100))
 ```
 
-    Mean Cross Validation Score: 45.53%
+    Mean Cross Validation Score: 44.34%
 
 
 ## Grid Search: Decision Trees
@@ -528,6 +514,13 @@ Our model did poorly overall, but still significantly better than we
 would expect from random guessing, which would have ~10% accuracy.
 """
 ```
+
+
+
+
+    '\nOur model did poorly overall, but still significantly better than we \nwould expect from random guessing, which would have ~10% accuracy.\n'
+
+
 
 ### Creating A Parameter Grid
 
@@ -584,20 +577,20 @@ Let's create our `GridSearchCV` object and fit it.  In the cell below:
 
 ```python
 dt_grid_search = GridSearchCV(dt_clf, dt_param_grid, cv=3, return_train_score=True)
-dt_grid_search.fit(scaled_df, labels)
+dt_grid_search.fit(labels_removed_df, labels)
 ```
 
 
 
 
-    GridSearchCV(cv=3, error_score='raise',
+    GridSearchCV(cv=3, error_score='raise-deprecating',
            estimator=DecisionTreeClassifier(class_weight=None, criterion='gini', max_depth=None,
                 max_features=None, max_leaf_nodes=None,
                 min_impurity_decrease=0.0, min_impurity_split=None,
                 min_samples_leaf=1, min_samples_split=2,
                 min_weight_fraction_leaf=0.0, presort=False, random_state=None,
                 splitter='best'),
-           fit_params=None, iid=True, n_jobs=1,
+           fit_params=None, iid='warn', n_jobs=None,
            param_grid={'criterion': ['gini', 'entropy'], 'max_depth': [None, 2, 3, 4, 5, 6], 'min_samples_split': [2, 5, 10], 'min_samples_leaf': [1, 2, 3, 4, 5, 6]},
            pre_dispatch='2*n_jobs', refit=True, return_train_score=True,
            scoring=None, verbose=0)
@@ -619,7 +612,7 @@ In the cell below:
 
 ```python
 dt_gs_training_score = np.mean(dt_grid_search.cv_results_['mean_train_score'])
-dt_gs_testing_score = dt_grid_search.score(scaled_df, labels)
+dt_gs_testing_score = dt_grid_search.score(labels_removed_df, labels)
 
 print("Mean Training Score: {:.4}%".format(dt_gs_training_score * 100))
 print("Mean Testing Score: {:.4}%".format(dt_gs_testing_score * 100))
@@ -638,7 +631,7 @@ dt_grid_search.best_params_
     {'criterion': 'gini',
      'max_depth': 5,
      'min_samples_leaf': 6,
-     'min_samples_split': 10}
+     'min_samples_split': 2}
 
 
 
@@ -659,6 +652,13 @@ the parameters we include in our parameter grid.
 """
 ```
 
+
+
+
+    "\nThe parameter tuning using GridSearchCV improved our model's performance \nby over 20%, from ~44% to ~66%. The model also shows no signs of \noverfitting, as evidenced by the close training and testing scores. \nGrid Search does not gaurantee that we will always find the globally \noptimal combination of parameter values, since it only exhaustively \nsearches through the parameter values we provide, \nnot every possible combination of every possible value for each parameter. \nThis means that the model is only as good as the possible combinations of \nthe parameters we include in our parameter grid.\n"
+
+
+
 ### Tuning More Advanced Models: Random Forests
 
 Now that we have some experience with Grid Searching through parameter values for a Decision Tree Classifier, let's try our luck with a more advanced model and tune a _Random Forest Classifier_.  
@@ -672,12 +672,20 @@ In the cell below:
 
 ```python
 rf_clf = RandomForestClassifier()
-mean_rf_cv_score = np.mean(cross_val_score(rf_clf, scaled_df, labels, cv=3))
+mean_rf_cv_score = np.mean(cross_val_score(rf_clf, labels_removed_df, labels, cv=3))
 
 print("Mean Cross Validation Score for Random Forest Classifier: {:.4}%".format(mean_rf_cv_score * 100))
 ```
 
-    Mean Cross Validation Score for Random Forest Classifier: 55.36%
+    Mean Cross Validation Score for Random Forest Classifier: 52.35%
+
+
+    /Users/forest.polchow/anaconda3/lib/python3.6/site-packages/sklearn/ensemble/forest.py:246: FutureWarning: The default value of n_estimators will change from 10 in version 0.20 to 100 in 0.22.
+      "10 in version 0.20 to 100 in 0.22.", FutureWarning)
+    /Users/forest.polchow/anaconda3/lib/python3.6/site-packages/sklearn/ensemble/forest.py:246: FutureWarning: The default value of n_estimators will change from 10 in version 0.20 to 100 in 0.22.
+      "10 in version 0.20 to 100 in 0.22.", FutureWarning)
+    /Users/forest.polchow/anaconda3/lib/python3.6/site-packages/sklearn/ensemble/forest.py:246: FutureWarning: The default value of n_estimators will change from 10 in version 0.20 to 100 in 0.22.
+      "10 in version 0.20 to 100 in 0.22.", FutureWarning)
 
 
 Now that we have our baseline score, we'll create a parameter grid specific to our Random Forest Classifier.  
@@ -722,7 +730,7 @@ When creating your `GridSearchCV` object,  pass in:
 import time
 start = time.time()
 rf_grid_search = GridSearchCV(rf_clf, rf_param_grid, cv=3)
-rf_grid_search.fit(scaled_df, labels)
+rf_grid_search.fit(labels_removed_df, labels)
 
 print("Testing Accuracy: {:.4}%".format(rf_grid_search.best_score_ * 100))
 print("Total Runtime for Grid Search on Random Forest Classifier: {:.4} seconds".format(time.time() - start))
@@ -730,10 +738,10 @@ print("")
 print("Optimal Parameters: {}".format(rf_grid_search.best_params_))
 ```
 
-    Testing Accuracy: 58.97%
-    Total Runtime for Grid Search on Random Forest Classifier: 36.1 seconds
+    Testing Accuracy: 58.72%
+    Total Runtime for Grid Search on Random Forest Classifier: 35.41 seconds
     
-    Optimal Parameters: {'criterion': 'gini', 'max_depth': None, 'min_samples_leaf': 5, 'min_samples_split': 10, 'n_estimators': 100}
+    Optimal Parameters: {'criterion': 'gini', 'max_depth': 6, 'min_samples_leaf': 2, 'min_samples_split': 10, 'n_estimators': 10}
 
 
 ### Interpreting Our Results
@@ -755,6 +763,13 @@ then I would go with the Decision Tree Classifier because it scored higher.
 """
 ```
 
+
+
+
+    '\nParameter tuning improved performance marginally, by about 6%. \nThis is good, but still falls short of the top testing score of the \nDecision Tree Classifier by about 7%. Which model to ship to production \nwould depend on several factors, such as the overall goal, and how \nnoisy the dataset is. If the dataset is particularly noisy, \nthe Random Forest model would likely be preferable, \nsince the ensemble approach makes it more resistant to variance in the data. \nIf the data is fairly stable from batch to batch and not too noisy, \nor if higher accuracy had a disproportionate effect on our business goals, \nthen I would go with the Decision Tree Classifier because it scored higher.\n'
+
+
+
 ### Tuning Gradient Boosted Trees (AdaBoost)
 
 The last model we'll tune in this lab is an AdaBoost Classifier, although tuning this model will generally be similar to tuning other forms of Gradient Boosted Tree (GBT) models.  
@@ -764,7 +779,7 @@ In the cell below, create an AdaBoost Classifier Object.  Then, as we did with t
 
 ```python
 adaboost_clf = AdaBoostClassifier()
-adaboost_mean_cv_score = np.mean(cross_val_score(adaboost_clf, scaled_df, labels, cv=3))
+adaboost_mean_cv_score = np.mean(cross_val_score(adaboost_clf, labels_removed_df, labels, cv=3))
 
 print("Mean Cross Validation Score for AdaBoost: {:.4}%".format(adaboost_mean_cv_score * 100))
 ```
@@ -794,7 +809,7 @@ Great.  Now, for the finale--use Grid Search to find optimal parameters for AdaB
 
 ```python
 adaboost_grid_search = GridSearchCV(adaboost_clf, adaboost_param_grid, cv=3)
-adaboost_grid_search.fit(scaled_df, labels)
+adaboost_grid_search.fit(labels_removed_df, labels)
 
 print("Testing Accuracy: {:.4}%".format(adaboost_grid_search.best_score_ * 100))
 print("Total Runtime for Grid Search on AdaBoost: {:.4} seconds".format(time.time() - start))
@@ -803,7 +818,7 @@ print("Optimal Parameters: {}".format(adaboost_grid_search.best_params_))
 ```
 
     Testing Accuracy: 56.6%
-    Total Runtime for Grid Search on AdaBoost: 49.89 seconds
+    Total Runtime for Grid Search on AdaBoost: 118.3 seconds
     
     Optimal Parameters: {'learning_rate': 0.1, 'n_estimators': 100}
 
