@@ -39,6 +39,7 @@ from sklearn.model_selection import train_test_split, GridSearchCV, cross_val_sc
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from sklearn.metrics import accuracy_score
+import time
 ```
 
 Now that we've imported all the necessary libraries and frameworks for this lab, we'll need to get the dataset.  
@@ -52,6 +53,11 @@ df = None
 
 Great! Let's inspect our data a bit.  In the cell below, perform some basic Exploratory Data Analysis on our dataset.  Get a feel for your data by exploring the descriptive statistics and creating at least 1 visualization to help you better understand this dataset.
 
+
+```python
+
+```
+
 **_Question:_** Based on your findings during your Exploratory Data Analysis, do you think that we need to do any sort of preprocessing on this dataset? Why or why not?
 
 Write your answer below this line:
@@ -60,21 +66,29 @@ ________________________________________________________________________________
 
 ### Preprocessing our Data
 
-Now, we'll perform any necessary preprocessing on our dataset before training our model.  We'll start by isolating the target variable that we are trying to predict.  In the cell below:
+Now, we'll perform any necessary preprocessing on our dataset before training our model.  We'll start by isolating the target variable that we are trying to predict.  
 
-* Store the data in the `quality` column inside the `labels` variable
+In the cell below:
+* Store the data in the `quality` column inside the `y` variable
 * Drop the `quality` column from the dataset
 
 
 ```python
-labels = None
-labels_removed_df = None
-
+y = None
+X = None
 ```
 
 ### Training, Testing, and Cross Validation
 
-Normally, we would split our data into training and testing sets.  However, since we'll be making use of **_Cross Validation_** when using `GridSearchCV`, we'll also want to make use of it with our baseline model to ensure that things are equal.  Recall that we do not need to split our data into training and testing sets when using cross validation, since the cross validation will take care of that for us.  
+First we want to do a train test split to create a holdout set to evaluatate how good our final model will be. Remember that any time we make modeling decisions based on a section of our data and we risk overfitting to that data. We can make use of **_Cross Validation_** when using `GridSearchCV` to do model selectionn and hyperparameter tuning then test our final model choice on the test set.
+
+In the cell below:
+* Create a training and testing set using train_test_split (set ```random_state=42``` for reproducability)
+
+
+```python
+
+```
 
 ### Creating a Baseline Model: Decision Trees
 
@@ -91,7 +105,7 @@ dt_clf = None
 dt_cv_score = None
 mean_dt_cv_score = None
 
-# print("Mean Cross Validation Score: {:.4}%".format(mean_dt_cv_score * 100))
+# print(f"Mean Cross Validation Score: {mean_dt_cv_score :.2%}")
 ```
 
 ## Grid Search: Decision Trees
@@ -123,6 +137,9 @@ In the cell below:
     * For `"max_depth"`, try `None`, as well as `2, 3, 4, 5` and `6`.
     * For `min_samples_split`, try `2, 5`, and `10`.
     * For `"min_samples_leaf"`, try `1, 2, 3, 4, 5` and `6`.
+    
+    
+* Before you run the grid search take some time to understand what each of the specific hyperparameters mean. How does varying the values of each hyperparameter effect overfitting or underfitting of a decisionn tree model?
 
 
 ```python
@@ -142,11 +159,8 @@ Calculate and print your answer in the cell below.
 
 ```python
 num_decision_trees = None
-print("Grid Search will have to search through {} different permutations.".format(num_decision_trees))
+print(f"Grid Search will have to search through {num_decision_trees} different permutations.")
 ```
-
-    Grid Search will have to search through None different permutations.
-
 
 That's a lot of Decision Trees! Decision Trees are generally pretty quick to train, but that isn't the case with every type of model we could want to tune.  Be aware that if you set a particularly large search space of parameters inside your parameter grid, then Grid Searching could potentially take a very long time. 
 
@@ -177,8 +191,8 @@ In the cell below:
 dt_gs_training_score = None
 dt_gs_testing_score = None
 
-# print("Mean Training Score: {:.4}%".format(dt_gs_training_score * 100))
-# print("Mean Testing Score: {:.4}%".format(dt_gs_testing_score * 100))
+# print(f"Mean Training Score: {dt_gs_training_score :.2%}")
+# print(f"Mean Testing Score: {dt_gs_testing_score :.2%}")
 # print("Best Parameter Combination Found During Grid Search:")
 # dt_grid_search.best_params_
 ```
@@ -204,7 +218,8 @@ In the cell below:
 ```python
 rf_clf = None
 mean_rf_cv_score = None
-# print("Mean Cross Validation Score for Random Forest Classifier: {:.4}%".format(mean_rf_cv_score * 100))
+
+# print(f"Mean Cross Validation Score for Random Forest Classifier: {mean_rf_cv_score :.2%}")
 ```
 
 Now that we have our baseline score, we'll create a parameter grid specific to our Random Forest Classifier.  
@@ -246,10 +261,10 @@ start = time.time()
 rf_grid_search =None
 # rf_grid_search.fit(None, None)
 
-# print("Testing Accuracy: {:.4}%".format(rf_grid_search.best_score_ * 100))
-# print("Total Runtime for Grid Search on Random Forest Classifier: {:.4} seconds".format(time.time() - start))
+# print(f"Testing Accuracy: {rf_grid_search.best_score_ :.2%}")
+# print(f"Total Runtime for Grid Search on Random Forest Classifier: {time.time() - start :.2f} seconds")
 # print("")
-# print("Optimal Parameters: {}".format(rf_grid_search.best_params_))
+# print(f"Optimal Parameters: {rf_grid_search.best_params_}")
 ```
 
 ### Interpreting Our Results
@@ -271,7 +286,7 @@ In the cell below, create an AdaBoost Classifier Object.  Then, as we did with t
 adaboost_clf = None
 adaboost_mean_cv_score = None
 
-# print("Mean Cross Validation Score for AdaBoost: {:.4}%".format(adaboost_mean_cv_score * 100))
+# print(f"Mean Cross Validation Score for AdaBoost: {adaboost_mean_cv_score :.2%}")
 ```
 
 Great! Now, onto creating the parameter grid for AdaBoost.  
@@ -297,10 +312,19 @@ Great.  Now, for the finale--use Grid Search to find optimal parameters for AdaB
 adaboost_grid_search = None
 # adaboost_grid_search.fit(None, None)
 
-# print("Testing Accuracy: {:.4}%".format(adaboost_grid_search.best_score_ * 100))
-# print("Total Runtime for Grid Search on AdaBoost: {:.4} seconds".format(time.time() - start))
+# print(f"Testing Accuracy: {adaboost_grid_search.best_score_ :.2%}")
+# print(f"Total Runtime for Grid Search on AdaBoost: {time.time() - start :.2f} seconds")
 # print("")
-# print("Optimal Parameters: {}".format(adaboost_grid_search.best_params_))
+# print(f"Optimal Parameters: {adaboost_grid_search.best_params_}")
+```
+
+## Evaluate the Best Performing Model on the Holdout Set
+
+
+```python
+holdout_accuracy = None
+
+print(f'The holdout accuracy for the decision tree is {holdout_accuracy :.2%}')
 ```
 
 ## Summary
