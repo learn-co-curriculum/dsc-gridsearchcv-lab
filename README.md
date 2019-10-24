@@ -39,6 +39,7 @@ from sklearn.model_selection import train_test_split, GridSearchCV, cross_val_sc
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from sklearn.metrics import accuracy_score
+import time
 ```
 
 Now that we've imported all the necessary libraries and frameworks for this lab, we'll need to get the dataset.  
@@ -353,16 +354,17 @@ ________________________________________________________________________________
 
 ### Preprocessing our Data
 
-Now, we'll perform any necessary preprocessing on our dataset before training our model.  We'll start by isolating the target variable that we are trying to predict.  In the cell below:
+Now, we'll perform any necessary preprocessing on our dataset before training our model.  We'll start by isolating the target variable that we are trying to predict.  
 
-* Store the data in the `quality` column inside the `labels` variable
+In the cell below:
+* Store the data in the `quality` column inside the `y` variable
 * Drop the `quality` column from the dataset
 
 
 ```python
-labels = df['quality']
-labels_removed_df = df.drop('quality', axis=1, inplace=False)
-labels_removed_df.head()
+y = df['quality']
+X = df.drop('quality', axis=1, inplace=False)
+X.head()
 ```
 
 
@@ -478,7 +480,17 @@ labels_removed_df.head()
 
 ### Training, Testing, and Cross Validation
 
-Normally, we would split our data into training and testing sets.  However, since we'll be making use of **_Cross Validation_** when using `GridSearchCV`, we'll also want to make use of it with our baseline model to ensure that things are equal.  Recall that we do not need to split our data into training and testing sets when using cross validation, since the cross validation will take care of that for us.  
+First we want to do a train test split to create a holdout set to evaluatate how good our final model will be. Remember that any time we make modeling decisions based on a section of our data and we risk overfitting to that data. We can make use of **_Cross Validation_** when using `GridSearchCV` to do model selectionn and hyperparameter tuning then test our final model choice on the test set.
+
+In the cell below:
+* Create a training and testing set using train_test_split (set ```random_state=42``` for reproducability)
+
+
+```python
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42)
+```
 
 ### Creating a Baseline Model: Decision Trees
 
@@ -492,13 +504,14 @@ In the cell below:
 
 ```python
 dt_clf = DecisionTreeClassifier()
-dt_cv_score = cross_val_score(dt_clf, labels_removed_df, labels, cv=3)
+
+dt_cv_score = cross_val_score(dt_clf, X_train, y_train, cv=3)
 mean_dt_cv_score = np.mean(dt_cv_score)
 
-print("Mean Cross Validation Score: {:.4}%".format(mean_dt_cv_score * 100))
+print(f"Mean Cross Validation Score: {mean_dt_cv_score :.2%}")
 ```
 
-    Mean Cross Validation Score: 44.34%
+    Mean Cross Validation Score: 55.89%
 
 
 ## Grid Search: Decision Trees
@@ -509,17 +522,16 @@ Write your answer below:
 
 
 ```python
-"""
+print("""
 Our model did poorly overall, but still significantly better than we 
 would expect from random guessing, which would have ~10% accuracy.
-"""
+""")
 ```
 
-
-
-
-    '\nOur model did poorly overall, but still significantly better than we \nwould expect from random guessing, which would have ~10% accuracy.\n'
-
+    
+    Our model did poorly overall, but still significantly better than we 
+    would expect from random guessing, which would have ~10% accuracy.
+    
 
 
 ### Creating A Parameter Grid
@@ -540,6 +552,9 @@ In the cell below:
     * For `"max_depth"`, try `None`, as well as `2, 3, 4, 5` and `6`.
     * For `min_samples_split`, try `2, 5`, and `10`.
     * For `"min_samples_leaf"`, try `1, 2, 3, 4, 5` and `6`.
+    
+    
+* Before you run the grid search take some time to understand what each of the specific hyperparameters mean. How does varying the values of each hyperparameter effect overfitting or underfitting of a decisionn tree model?
 
 
 ```python
@@ -562,11 +577,8 @@ Calculate and print your answer in the cell below.
 
 ```python
 num_decision_trees = 3 * 2 * 6 * 3 * 6
-print("Grid Search will have to search through {} different permutations.".format(num_decision_trees))
+print(f"Grid Search will have to search through {num_decision_trees} different permutations.")
 ```
-
-    Grid Search will have to search through 648 different permutations.
-
 
 That's a lot of Decision Trees! Decision Trees are generally pretty quick to train, but that isn't the case with every type of model we could want to tune.  Be aware that if you set a particularly large search space of parameters inside your parameter grid, then Grid Searching could potentially take a very long time. 
 
@@ -577,8 +589,12 @@ Let's create our `GridSearchCV` object and fit it.  In the cell below:
 
 ```python
 dt_grid_search = GridSearchCV(dt_clf, dt_param_grid, cv=3, return_train_score=True)
-dt_grid_search.fit(labels_removed_df, labels)
+dt_grid_search.fit(X_train, y_train)
 ```
+
+    /anaconda3/lib/python3.7/site-packages/sklearn/model_selection/_search.py:841: DeprecationWarning: The default of the `iid` parameter will change from True to False in version 0.22 and will be removed in 0.24. This will change numeric results when test-set sizes are unequal.
+      DeprecationWarning)
+
 
 
 
@@ -612,24 +628,24 @@ In the cell below:
 
 ```python
 dt_gs_training_score = np.mean(dt_grid_search.cv_results_['mean_train_score'])
-dt_gs_testing_score = dt_grid_search.score(labels_removed_df, labels)
+dt_gs_testing_score = dt_grid_search.score(X_train, y_train)
 
-print("Mean Training Score: {:.4}%".format(dt_gs_training_score * 100))
-print("Mean Testing Score: {:.4}%".format(dt_gs_testing_score * 100))
+print(f"Mean Training Score: {dt_gs_training_score :.2%}")
+print(f"Mean Testing Score: {dt_gs_testing_score :.2%}")
 print("Best Parameter Combination Found During Grid Search:")
 dt_grid_search.best_params_
 ```
 
-    Mean Training Score: 67.15%
-    Mean Testing Score: 66.04%
+    Mean Training Score: 67.81%
+    Mean Testing Score: 61.80%
     Best Parameter Combination Found During Grid Search:
 
 
 
 
 
-    {'criterion': 'gini',
-     'max_depth': 5,
+    {'criterion': 'entropy',
+     'max_depth': 4,
      'min_samples_leaf': 6,
      'min_samples_split': 2}
 
@@ -639,7 +655,7 @@ dt_grid_search.best_params_
 
 
 ```python
-"""
+print("""
 The parameter tuning using GridSearchCV improved our model's performance 
 by over 20%, from ~44% to ~66%. The model also shows no signs of 
 overfitting, as evidenced by the close training and testing scores. 
@@ -647,16 +663,22 @@ Grid Search does not gaurantee that we will always find the globally
 optimal combination of parameter values, since it only exhaustively 
 searches through the parameter values we provide, 
 not every possible combination of every possible value for each parameter. 
-This means that the model is only as good as the possible combinations of 
+This means that the model is only as good as the possible combinations of
 the parameters we include in our parameter grid.
-"""
+""")
 ```
 
-
-
-
-    "\nThe parameter tuning using GridSearchCV improved our model's performance \nby over 20%, from ~44% to ~66%. The model also shows no signs of \noverfitting, as evidenced by the close training and testing scores. \nGrid Search does not gaurantee that we will always find the globally \noptimal combination of parameter values, since it only exhaustively \nsearches through the parameter values we provide, \nnot every possible combination of every possible value for each parameter. \nThis means that the model is only as good as the possible combinations of \nthe parameters we include in our parameter grid.\n"
-
+    
+    The parameter tuning using GridSearchCV improved our model's performance 
+    by over 20%, from ~44% to ~66%. The model also shows no signs of 
+    overfitting, as evidenced by the close training and testing scores. 
+    Grid Search does not gaurantee that we will always find the globally 
+    optimal combination of parameter values, since it only exhaustively 
+    searches through the parameter values we provide, 
+    not every possible combination of every possible value for each parameter. 
+    This means that the model is only as good as the possible combinations of
+    the parameters we include in our parameter grid.
+    
 
 
 ### Tuning More Advanced Models: Random Forests
@@ -672,19 +694,19 @@ In the cell below:
 
 ```python
 rf_clf = RandomForestClassifier()
-mean_rf_cv_score = np.mean(cross_val_score(rf_clf, labels_removed_df, labels, cv=3))
+mean_rf_cv_score = np.mean(cross_val_score(rf_clf, X_train, y_train, cv=3))
 
-print("Mean Cross Validation Score for Random Forest Classifier: {:.4}%".format(mean_rf_cv_score * 100))
+print(f"Mean Cross Validation Score for Random Forest Classifier: {mean_rf_cv_score :.2%}")
 ```
 
-    Mean Cross Validation Score for Random Forest Classifier: 52.35%
+    Mean Cross Validation Score for Random Forest Classifier: 61.99%
 
 
-    /Users/forest.polchow/anaconda3/lib/python3.6/site-packages/sklearn/ensemble/forest.py:246: FutureWarning: The default value of n_estimators will change from 10 in version 0.20 to 100 in 0.22.
+    /anaconda3/lib/python3.7/site-packages/sklearn/ensemble/forest.py:246: FutureWarning: The default value of n_estimators will change from 10 in version 0.20 to 100 in 0.22.
       "10 in version 0.20 to 100 in 0.22.", FutureWarning)
-    /Users/forest.polchow/anaconda3/lib/python3.6/site-packages/sklearn/ensemble/forest.py:246: FutureWarning: The default value of n_estimators will change from 10 in version 0.20 to 100 in 0.22.
+    /anaconda3/lib/python3.7/site-packages/sklearn/ensemble/forest.py:246: FutureWarning: The default value of n_estimators will change from 10 in version 0.20 to 100 in 0.22.
       "10 in version 0.20 to 100 in 0.22.", FutureWarning)
-    /Users/forest.polchow/anaconda3/lib/python3.6/site-packages/sklearn/ensemble/forest.py:246: FutureWarning: The default value of n_estimators will change from 10 in version 0.20 to 100 in 0.22.
+    /anaconda3/lib/python3.7/site-packages/sklearn/ensemble/forest.py:246: FutureWarning: The default value of n_estimators will change from 10 in version 0.20 to 100 in 0.22.
       "10 in version 0.20 to 100 in 0.22.", FutureWarning)
 
 
@@ -707,8 +729,8 @@ rf_param_grid = {
     'n_estimators': [10, 30, 100],
     'criterion': ['gini', 'entropy'],
     'max_depth': [None, 2, 6, 10],
-    'min_samples_split': [10, 20],
-    'min_samples_leaf': [1, 2, 5]
+    'min_samples_split': [5, 10],
+    'min_samples_leaf': [3, 6]
 }
 ```
 
@@ -730,18 +752,22 @@ When creating your `GridSearchCV` object,  pass in:
 import time
 start = time.time()
 rf_grid_search = GridSearchCV(rf_clf, rf_param_grid, cv=3)
-rf_grid_search.fit(labels_removed_df, labels)
+rf_grid_search.fit(X_train, y_train)
 
-print("Testing Accuracy: {:.4}%".format(rf_grid_search.best_score_ * 100))
-print("Total Runtime for Grid Search on Random Forest Classifier: {:.4} seconds".format(time.time() - start))
+print(f"Testing Accuracy: {rf_grid_search.best_score_ :.2%}")
+print(f"Total Runtime for Grid Search on Random Forest Classifier: {time.time() - start :.2f} seconds")
 print("")
-print("Optimal Parameters: {}".format(rf_grid_search.best_params_))
+print(f"Optimal Parameters: {rf_grid_search.best_params_}")
 ```
 
-    Testing Accuracy: 58.72%
-    Total Runtime for Grid Search on Random Forest Classifier: 35.41 seconds
+    Testing Accuracy: 64.39%
+    Total Runtime for Grid Search on Random Forest Classifier: 17.62 seconds
     
-    Optimal Parameters: {'criterion': 'gini', 'max_depth': 6, 'min_samples_leaf': 2, 'min_samples_split': 10, 'n_estimators': 10}
+    Optimal Parameters: {'criterion': 'entropy', 'max_depth': None, 'min_samples_leaf': 3, 'min_samples_split': 5, 'n_estimators': 100}
+
+
+    /anaconda3/lib/python3.7/site-packages/sklearn/model_selection/_search.py:841: DeprecationWarning: The default of the `iid` parameter will change from True to False in version 0.22 and will be removed in 0.24. This will change numeric results when test-set sizes are unequal.
+      DeprecationWarning)
 
 
 ### Interpreting Our Results
@@ -749,7 +775,7 @@ Did tuning the hyperparameters of our Random Forest Classifier improve model per
 
 
 ```python
-"""
+print("""
 Parameter tuning improved performance marginally, by about 6%. 
 This is good, but still falls short of the top testing score of the 
 Decision Tree Classifier by about 7%. Which model to ship to production 
@@ -760,14 +786,21 @@ since the ensemble approach makes it more resistant to variance in the data.
 If the data is fairly stable from batch to batch and not too noisy, 
 or if higher accuracy had a disproportionate effect on our business goals, 
 then I would go with the Decision Tree Classifier because it scored higher.
-"""
+""")
 ```
 
-
-
-
-    '\nParameter tuning improved performance marginally, by about 6%. \nThis is good, but still falls short of the top testing score of the \nDecision Tree Classifier by about 7%. Which model to ship to production \nwould depend on several factors, such as the overall goal, and how \nnoisy the dataset is. If the dataset is particularly noisy, \nthe Random Forest model would likely be preferable, \nsince the ensemble approach makes it more resistant to variance in the data. \nIf the data is fairly stable from batch to batch and not too noisy, \nor if higher accuracy had a disproportionate effect on our business goals, \nthen I would go with the Decision Tree Classifier because it scored higher.\n'
-
+    
+    Parameter tuning improved performance marginally, by about 6%. 
+    This is good, but still falls short of the top testing score of the 
+    Decision Tree Classifier by about 7%. Which model to ship to production 
+    would depend on several factors, such as the overall goal, and how 
+    noisy the dataset is. If the dataset is particularly noisy, 
+    the Random Forest model would likely be preferable, 
+    since the ensemble approach makes it more resistant to variance in the data. 
+    If the data is fairly stable from batch to batch and not too noisy, 
+    or if higher accuracy had a disproportionate effect on our business goals, 
+    then I would go with the Decision Tree Classifier because it scored higher.
+    
 
 
 ### Tuning Gradient Boosted Trees (AdaBoost)
@@ -779,12 +812,12 @@ In the cell below, create an AdaBoost Classifier Object.  Then, as we did with t
 
 ```python
 adaboost_clf = AdaBoostClassifier()
-adaboost_mean_cv_score = np.mean(cross_val_score(adaboost_clf, labels_removed_df, labels, cv=3))
+adaboost_mean_cv_score = np.mean(cross_val_score(adaboost_clf, X_train, y_train, cv=3))
 
-print("Mean Cross Validation Score for AdaBoost: {:.4}%".format(adaboost_mean_cv_score * 100))
+print(f"Mean Cross Validation Score for AdaBoost: {adaboost_mean_cv_score :.2%}")
 ```
 
-    Mean Cross Validation Score for AdaBoost: 53.03%
+    Mean Cross Validation Score for AdaBoost: 54.22%
 
 
 Great! Now, onto creating the parameter grid for AdaBoost.  
@@ -809,18 +842,36 @@ Great.  Now, for the finale--use Grid Search to find optimal parameters for AdaB
 
 ```python
 adaboost_grid_search = GridSearchCV(adaboost_clf, adaboost_param_grid, cv=3)
-adaboost_grid_search.fit(labels_removed_df, labels)
+adaboost_grid_search.fit(X_train, y_train)
 
-print("Testing Accuracy: {:.4}%".format(adaboost_grid_search.best_score_ * 100))
-print("Total Runtime for Grid Search on AdaBoost: {:.4} seconds".format(time.time() - start))
+print(f"Testing Accuracy: {adaboost_grid_search.best_score_ :.2%}")
+print(f"Total Runtime for Grid Search on AdaBoost: {time.time() - start :.2f} seconds")
 print("")
-print("Optimal Parameters: {}".format(adaboost_grid_search.best_params_))
+print(f"Optimal Parameters: {adaboost_grid_search.best_params_}")
 ```
 
-    Testing Accuracy: 56.6%
-    Total Runtime for Grid Search on AdaBoost: 118.3 seconds
+    Testing Accuracy: 56.30%
+    Total Runtime for Grid Search on AdaBoost: 22.42 seconds
     
-    Optimal Parameters: {'learning_rate': 0.1, 'n_estimators': 100}
+    Optimal Parameters: {'learning_rate': 0.1, 'n_estimators': 50}
+
+
+    /anaconda3/lib/python3.7/site-packages/sklearn/model_selection/_search.py:841: DeprecationWarning: The default of the `iid` parameter will change from True to False in version 0.22 and will be removed in 0.24. This will change numeric results when test-set sizes are unequal.
+      DeprecationWarning)
+
+
+## Evaluate the Best Performing Model on the Holdout Set
+
+
+```python
+'''In this case the decision tree had the highest accuracy'''
+
+holdout_accuracy = dt_grid_search.score(X_test, y_test)
+
+print(f'The holdout accuracy for the final model is {holdout_accuracy :.2%}')
+```
+
+    The holdout accuracy for the final model is 56.25%
 
 
 ## Summary
