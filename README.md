@@ -280,48 +280,6 @@ Did tuning the hyperparameters of our random forest classifier improve model per
 # Your answer here
 ```
 
-### Tuning gradient boosted trees (AdaBoost)
-
-The last model we'll tune in this lab is an AdaBoost classifier, although tuning this model will generally be similar to tuning other forms of gradient boosted tree (GBT) models.  
-
-In the cell below, instantiate an AdaBoost classifier.  Then, as we did with the previous two examples, fit the model using using 3-fold cross-validation to get a baseline accuracy so we can see how an untuned AdaBoost model performs on this task.  
-
-
-```python
-adaboost_clf = None
-adaboost_mean_cv_score = None
-
-print(f"Mean Cross Validation Score for AdaBoost: {adaboost_mean_cv_score :.2%}")
-```
-
-Great! Now, onto creating the parameter grid for AdaBoost.  
-
-Complete the `adaboost_param_grid` dictionary by adding in the following key-value pairs:
-
-|   Parameters  |      Values     |
-|:-------------:|:---------------:|
-|  n_estimators |  [50, 100, 250] |
-| learning_rate | [1.0, 0.5, 0.1] |
-
-
-```python
-adaboost_param_grid = {
-    
-}
-```
-
-Great.  Now, for the finale -- use grid search to find optimal parameters for AdaBoost, and see how the model performs overall!
-
-
-```python
-adaboost_grid_search = None
-
-
-print(f"Testing Accuracy: {adaboost_grid_search.best_score_ :.2%}")
-print("")
-print(f"Optimal Parameters: {adaboost_grid_search.best_params_}")
-```
-
 ## Which model performed the best on the holdout set? 
 
 Run the following cell to see the accuracy of the various grid search models on the test set: 
@@ -330,18 +288,16 @@ Run the following cell to see the accuracy of the various grid search models on 
 ```python
 dt_score = dt_grid_search.score(X_test, y_test)
 rf_score = rf_grid_search.score(X_test, y_test)
-adb_score = adaboost_grid_search.score(X_test, y_test)
 
 print('Decision tree grid search: ', dt_score)
 print('Random forest grid search: ', rf_score)
-print('Adaboost grid search: ', adb_score)
 ```
 
 So our random forest model performed the best! 
 
 ## Summary
 
-In this lab, we learned:
+In this lab, you learned to:
 
-* How to iteratively search for optimal model parameters using `GridSearhCV`
-* How to tune model parameters for decision trees, random forests, and AdaBoost models 
+* iteratively search for optimal model parameters using `GridSearhCV`
+* tune model parameters for decision trees and random forests models 
