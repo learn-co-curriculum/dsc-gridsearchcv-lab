@@ -512,7 +512,7 @@ mean_dt_cv_score = np.mean(dt_cv_score)
 print(f"Mean Cross Validation Score: {mean_dt_cv_score :.2%}")
 ```
 
-    Mean Cross Validation Score: 56.31%
+    Mean Cross Validation Score: 56.97%
 
 
 Take a second to interpret the results of the cross-validation score.  How well did the model do? How does this compare to a naive baseline level of accuracy (random guessing)?
@@ -713,7 +713,7 @@ mean_rf_cv_score = np.mean(cross_val_score(rf_clf, X_train, y_train, cv=3))
 print(f"Mean Cross Validation Score for Random Forest Classifier: {mean_rf_cv_score :.2%}")
 ```
 
-    Mean Cross Validation Score for Random Forest Classifier: 60.81%
+    Mean Cross Validation Score for Random Forest Classifier: 62.31%
 
 
     //anaconda3/lib/python3.7/site-packages/sklearn/ensemble/forest.py:245: FutureWarning: The default value of n_estimators will change from 10 in version 0.20 to 100 in 0.22.
@@ -771,9 +771,9 @@ print("")
 print(f"Optimal Parameters: {rf_grid_search.best_params_}")
 ```
 
-    Training Accuracy: 64.80%
+    Training Accuracy: 64.30%
     
-    Optimal Parameters: {'criterion': 'entropy', 'max_depth': None, 'min_samples_leaf': 3, 'min_samples_split': 5, 'n_estimators': 100}
+    Optimal Parameters: {'criterion': 'gini', 'max_depth': 10, 'min_samples_leaf': 3, 'min_samples_split': 5, 'n_estimators': 100}
 
 
     //anaconda3/lib/python3.7/site-packages/sklearn/model_selection/_search.py:813: DeprecationWarning: The default of the `iid` parameter will change from True to False in version 0.22 and will be removed in 0.24. This will change numeric results when test-set sizes are unequal.
@@ -814,61 +814,6 @@ then I would go with the Decision Tree Classifier because it scored higher.
     
 
 
-### Tuning gradient boosted trees (AdaBoost)
-
-The last model we'll tune in this lab is an AdaBoost classifier, although tuning this model will generally be similar to tuning other forms of gradient boosted tree (GBT) models.  
-
-In the cell below, instantiate an AdaBoost classifier.  Then, as we did with the previous two examples, fit the model using using 3-fold cross-validation to get a baseline accuracy so we can see how an untuned AdaBoost model performs on this task.  
-
-
-```python
-adaboost_clf = AdaBoostClassifier()
-adaboost_mean_cv_score = np.mean(cross_val_score(adaboost_clf, X_train, y_train, cv=3))
-
-print(f"Mean Cross Validation Score for AdaBoost: {adaboost_mean_cv_score :.2%}")
-```
-
-    Mean Cross Validation Score for AdaBoost: 54.22%
-
-
-Great! Now, onto creating the parameter grid for AdaBoost.  
-
-Complete the `adaboost_param_grid` dictionary by adding in the following key-value pairs:
-
-|   Parameters  |      Values     |
-|:-------------:|:---------------:|
-|  n_estimators |  [50, 100, 250] |
-| learning_rate | [1.0, 0.5, 0.1] |
-
-
-```python
-adaboost_param_grid = {
-    'n_estimators': [50, 100, 250],
-    'learning_rate': [1.0, 0.5, 0.1]
-}
-```
-
-Great.  Now, for the finale -- use grid search to find optimal parameters for AdaBoost, and see how the model performs overall!
-
-
-```python
-adaboost_grid_search = GridSearchCV(adaboost_clf, adaboost_param_grid, cv=3)
-adaboost_grid_search.fit(X_train, y_train)
-
-print(f"Training Accuracy: {adaboost_grid_search.best_score_ :.2%}")
-print("")
-print(f"Optimal Parameters: {adaboost_grid_search.best_params_}")
-```
-
-    Training Accuracy: 56.30%
-    
-    Optimal Parameters: {'learning_rate': 0.1, 'n_estimators': 50}
-
-
-    //anaconda3/lib/python3.7/site-packages/sklearn/model_selection/_search.py:813: DeprecationWarning: The default of the `iid` parameter will change from True to False in version 0.22 and will be removed in 0.24. This will change numeric results when test-set sizes are unequal.
-      DeprecationWarning)
-
-
 ## Which model performed the best on the holdout set? 
 
 Run the following cell to see the accuracy of the various grid search models on the test set: 
@@ -877,23 +822,20 @@ Run the following cell to see the accuracy of the various grid search models on 
 ```python
 dt_score = dt_grid_search.score(X_test, y_test)
 rf_score = rf_grid_search.score(X_test, y_test)
-adb_score = adaboost_grid_search.score(X_test, y_test)
 
 print('Decision tree grid search: ', dt_score)
 print('Random forest grid search: ', rf_score)
-print('Adaboost grid search: ', adb_score)
 ```
 
     Decision tree grid search:  0.5625
-    Random forest grid search:  0.66
-    Adaboost grid search:  0.5625
+    Random forest grid search:  0.6225
 
 
 So our random forest model performed the best! 
 
 ## Summary
 
-In this lab, we learned:
+In this lab, you learned to:
 
-* How to iteratively search for optimal model parameters using `GridSearhCV`
-* How to tune model parameters for decision trees, random forests, and AdaBoost models 
+* iteratively search for optimal model parameters using `GridSearhCV`
+* tune model parameters for decision trees and random forests models 
