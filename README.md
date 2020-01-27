@@ -81,7 +81,7 @@ X.head()
 
 ### Training, testing, and cross-validation
 
-First we want to do a train-test split to create a holdout set to evaluate how good our final model will be. Remember that any time we make modeling decisions based on a section of our data, we risk overfitting to that data. We can make use of **_Cross Validation_** when using `GridSearchCV` to do model selectionn and hyperparameter tuning then test our final model choice on the test set.
+First we want to do a train-test split to create a holdout set to evaluate how good our final model is. Remember that any time we make modeling decisions based on a section of our data, we risk overfitting to that data. We can make use of **_Cross Validation_** when using `GridSearchCV` to do model selection and hyperparameter tuning, then test our final model choice on the test set.
 
 In the cell below:
 
@@ -123,24 +123,24 @@ Write your answer below:
 
 ## Grid search: Decision trees
 
-Our model does not have a stellar performance. However, we've yet to modify the hyperparameters of the model. Each dataset is different, and the chances that the best possible parameters for a given dataset also happen to be the default parameters set by `scikit-learn` at instantiation is very low.  
+Our model does not have stellar performance. However, we've yet to modify the hyperparameters of the model. Each dataset is different, and the chances that the best possible parameters for a given dataset also happen to be the default parameters set by `scikit-learn` at instantiation is very low.  
 
-This means that we need to try **_Hyperparameter Tuning_**.  There are several strategies for searching for optimal hyperparameters -- the one we'll be using, **_Combinatoric Grid Searching_**, is probably the most popular, because it performs an exhaustive search of all possible combinations.  
+This means that we need to try **_Hyperparameter Tuning_**.  There are several strategies for searching for optimal hyperparameters. The one we'll be using, **_Combinatoric Grid Searching_**, is probably the most popular because it performs an exhaustive search of all possible combinations.  
 
 The sklearn module we'll be using to accomplish this is `GridSearchCV`, which can be found inside of `sklearn.model_selection`.
 
-Take a minute to look at sklearn's user guide for [GridSearchCV](http://scikit-learn.org/stable/modules/grid_search.html#grid-search), and then complete the following task.
+Take a minute to look at sklearn's user guide for [GridSearchCV](http://scikit-learn.org/stable/modules/grid_search.html#grid-search) and then complete the following task.
 
 In the cell below:
 
-* Complete the `param_grid` dictionary. In this dictionary, each key represents a parameter we want to tune, whereas the corresponding value is a list of every parameter value we'd like to check for that parameter 
+* Complete the `param_grid` dictionary. In this dictionary, each key represents a parameter we want to tune and each corresponding value is a list of every parameter value we'd like to check for that parameter 
 * Normally, you would have to just try different values to search through for each parameter.  However, in order to limit the complexity of this lab, the parameters and values to search through have been provided for you.  You just need to turn them into key-value pairs inside the `param_grid` dictionary. Complete `param_grid` so that it tests the following values for each corresponding parameter:
     * For `"criterion"`, try values of `"gini"` and `"entropy"` 
     * For `"max_depth"`, try `None`, as well as 2, 3, 4, 5, and 6  
     * For `min_samples_split`, try 2, 5, and 10 
     * For `"min_samples_leaf"`, try 1, 2, 3, 4, 5, and 6
     
-* Before you run the grid search take some time to understand what each of the specific hyperparameters mean. How does varying the values of each hyperparameter effect overfitting or underfitting of a decision tree model?
+* Before you run the grid search take some time to understand what each of the specific hyperparameters mean. How does varying the values of each hyperparameter effect the overfitting or underfitting of a decision tree model?
 
 
 ```python
@@ -151,7 +151,7 @@ dt_param_grid = {
 
 Now that we have our parameter grid set up, we can use `GridSearchCV`.  Before we do, let's briefly think about the particulars of this model. 
 
-Grid Search works by training a model on the data for each unique combination of parameters, and then returning the parameters of the model that performed best. In order to protect us from randomness, it is common to implement K-Fold cross validation during this step.  For this lab, we'll set K = 3, meaning that we'll actually train 3 different models for each unique combination of parameters.  
+Grid Search works by training a model on the data for each unique combination of parameters and then returning the parameters of the model that performed best. In order to protect us from randomness, it is common to implement K-Fold cross-validation during this step.  For this lab, we'll set K = 3, meaning that we'll actually train 3 different models for each unique combination of parameters.  
 
 Given our `param_grid` and the knowledge that we're going to use 3-fold cross-validation, how many different decision trees will `GridSearchCV` have to train in order to try every possible combination and find the best parameter choices?
 
@@ -217,7 +217,7 @@ print("Best Parameter Combination Found During Grid Search:")
 Now that we have some experience with grid searching through parameter values for a decision tree classifier, let's try our luck with a more advanced model and tune a _random forest classifier_.  
 
 In the cell below:
-* Instantiate `RandomForestClassifier` 
+* Instantiate a `RandomForestClassifier` 
 * Use 3-fold cross-validation to generate a baseline score for this model type, so that we have something to compare our tuned model performance to 
 
 
