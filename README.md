@@ -1,4 +1,3 @@
-
 # GridSearchCV - Lab
 
 ## Introduction
@@ -32,6 +31,7 @@ Run the cell below to import everything we'll need for this lab:
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+
 %matplotlib inline
 import seaborn as sns
 from sklearn.model_selection import train_test_split, GridSearchCV, cross_val_score
@@ -47,7 +47,7 @@ Our data is stored in the file `'winequality-red.csv'`. Use Pandas to import the
 
 ```python
 # Import the data
-df = pd.read_csv('winequality-red.csv')
+df = pd.read_csv("winequality-red.csv")
 df.head()
 ```
 
@@ -343,7 +343,9 @@ plt.show()
 
 
 
+    
 ![png](index_files/index_5_1.png)
+    
 
 
 **_Question:_** Based on your findings during your exploratory data analysis, do you think that we need to do any sort of preprocessing on this dataset? Why or why not?
@@ -362,8 +364,8 @@ In the cell below:
 
 
 ```python
-y = df['quality']
-X = df.drop('quality', axis=1)
+y = df["quality"]
+X = df.drop("quality", axis=1)
 X.head()
 ```
 
@@ -512,7 +514,7 @@ mean_dt_cv_score = np.mean(dt_cv_score)
 print(f"Mean Cross Validation Score: {mean_dt_cv_score :.2%}")
 ```
 
-    Mean Cross Validation Score: 56.97%
+    Mean Cross Validation Score: 55.63%
 
 
 Take a second to interpret the results of the cross-validation score.  How well did the model do? How does this compare to a naive baseline level of accuracy (random guessing)?
@@ -521,10 +523,12 @@ Write your answer below:
 
 
 ```python
-print("""
+print(
+    """
 Our model did poorly overall, but still significantly better than we 
 would expect from random guessing, which would have ~10% accuracy.
-""")
+"""
+)
 ```
 
     
@@ -557,10 +561,10 @@ In the cell below:
 
 ```python
 dt_param_grid = {
-    'criterion': ['gini', 'entropy'],
-    'max_depth': [None, 2, 3, 4, 5, 6],
-    'min_samples_split': [2, 5, 10],
-    'min_samples_leaf': [1, 2, 3, 4, 5, 6]
+    "criterion": ["gini", "entropy"],
+    "max_depth": [None, 2, 3, 4, 5, 6],
+    "min_samples_split": [2, 5, 10],
+    "min_samples_leaf": [1, 2, 3, 4, 5, 6],
 }
 ```
 
@@ -575,7 +579,9 @@ Calculate and print your answer in the cell below.
 
 ```python
 num_decision_trees = 3 * 2 * 6 * 3 * 6
-print(f"Grid Search will have to search through {num_decision_trees} different permutations.")
+print(
+    f"Grid Search will have to search through {num_decision_trees} different permutations."
+)
 ```
 
     Grid Search will have to search through 648 different permutations.
@@ -597,32 +603,15 @@ dt_grid_search = GridSearchCV(dt_clf, dt_param_grid, cv=3, return_train_score=Tr
 dt_grid_search.fit(X_train, y_train)
 ```
 
-    //anaconda3/lib/python3.7/site-packages/sklearn/model_selection/_search.py:813: DeprecationWarning: The default of the `iid` parameter will change from True to False in version 0.22 and will be removed in 0.24. This will change numeric results when test-set sizes are unequal.
-      DeprecationWarning)
 
 
 
-
-
-    GridSearchCV(cv=3, error_score='raise-deprecating',
-                 estimator=DecisionTreeClassifier(class_weight=None,
-                                                  criterion='gini', max_depth=None,
-                                                  max_features=None,
-                                                  max_leaf_nodes=None,
-                                                  min_impurity_decrease=0.0,
-                                                  min_impurity_split=None,
-                                                  min_samples_leaf=1,
-                                                  min_samples_split=2,
-                                                  min_weight_fraction_leaf=0.0,
-                                                  presort=False, random_state=None,
-                                                  splitter='best'),
-                 iid='warn', n_jobs=None,
+    GridSearchCV(cv=3, estimator=DecisionTreeClassifier(),
                  param_grid={'criterion': ['gini', 'entropy'],
                              'max_depth': [None, 2, 3, 4, 5, 6],
                              'min_samples_leaf': [1, 2, 3, 4, 5, 6],
                              'min_samples_split': [2, 5, 10]},
-                 pre_dispatch='2*n_jobs', refit=True, return_train_score=True,
-                 scoring=None, verbose=0)
+                 return_train_score=True)
 
 
 
@@ -641,7 +630,7 @@ In the cell below:
 
 ```python
 # Mean training score
-dt_gs_training_score = np.mean(dt_grid_search.cv_results_['mean_train_score'])
+dt_gs_training_score = np.mean(dt_grid_search.cv_results_["mean_train_score"])
 
 # Mean test score
 dt_gs_testing_score = dt_grid_search.score(X_test, y_test)
@@ -652,17 +641,17 @@ print("Best Parameter Combination Found During Grid Search:")
 dt_grid_search.best_params_
 ```
 
-    Mean Training Score: 67.81%
-    Mean Test Score: 56.25%
+    Mean Training Score: 67.58%
+    Mean Test Score: 54.25%
     Best Parameter Combination Found During Grid Search:
 
 
 
 
 
-    {'criterion': 'entropy',
-     'max_depth': 4,
-     'min_samples_leaf': 6,
+    {'criterion': 'gini',
+     'max_depth': 6,
+     'min_samples_leaf': 1,
      'min_samples_split': 2}
 
 
@@ -671,7 +660,8 @@ dt_grid_search.best_params_
 
 
 ```python
-print("""
+print(
+    """
 The parameter tuning using GridSearchCV improved our model's performance 
 by over 20%, from ~44% to ~66%. The model also shows no signs of 
 overfitting, as evidenced by the close training and testing scores. 
@@ -681,7 +671,8 @@ searches through the parameter values we provide,
 not every possible combination of every possible value for each parameter 
 is tested. This means that the model is only as good as the possible 
 combinations of the parameters we include in our parameter grid.
-""")
+"""
+)
 ```
 
     
@@ -710,18 +701,12 @@ In the cell below:
 rf_clf = RandomForestClassifier()
 mean_rf_cv_score = np.mean(cross_val_score(rf_clf, X_train, y_train, cv=3))
 
-print(f"Mean Cross Validation Score for Random Forest Classifier: {mean_rf_cv_score :.2%}")
+print(
+    f"Mean Cross Validation Score for Random Forest Classifier: {mean_rf_cv_score :.2%}"
+)
 ```
 
-    Mean Cross Validation Score for Random Forest Classifier: 62.31%
-
-
-    //anaconda3/lib/python3.7/site-packages/sklearn/ensemble/forest.py:245: FutureWarning: The default value of n_estimators will change from 10 in version 0.20 to 100 in 0.22.
-      "10 in version 0.20 to 100 in 0.22.", FutureWarning)
-    //anaconda3/lib/python3.7/site-packages/sklearn/ensemble/forest.py:245: FutureWarning: The default value of n_estimators will change from 10 in version 0.20 to 100 in 0.22.
-      "10 in version 0.20 to 100 in 0.22.", FutureWarning)
-    //anaconda3/lib/python3.7/site-packages/sklearn/ensemble/forest.py:245: FutureWarning: The default value of n_estimators will change from 10 in version 0.20 to 100 in 0.22.
-      "10 in version 0.20 to 100 in 0.22.", FutureWarning)
+    Mean Cross Validation Score for Random Forest Classifier: 64.56%
 
 
 Now that we have our baseline score, we'll create a parameter grid specific to our random forest classifier.  
@@ -740,11 +725,11 @@ Again -- in a real world situation, you will need to decide what parameters to t
 
 ```python
 rf_param_grid = {
-    'n_estimators': [10, 30, 100],
-    'criterion': ['gini', 'entropy'],
-    'max_depth': [None, 2, 6, 10],
-    'min_samples_split': [5, 10],
-    'min_samples_leaf': [3, 6]
+    "n_estimators": [10, 30, 100],
+    "criterion": ["gini", "entropy"],
+    "max_depth": [None, 2, 6, 10],
+    "min_samples_split": [5, 10],
+    "min_samples_leaf": [3, 6],
 }
 ```
 
@@ -771,13 +756,9 @@ print("")
 print(f"Optimal Parameters: {rf_grid_search.best_params_}")
 ```
 
-    Training Accuracy: 64.30%
+    Training Accuracy: 64.89%
     
-    Optimal Parameters: {'criterion': 'gini', 'max_depth': 10, 'min_samples_leaf': 3, 'min_samples_split': 5, 'n_estimators': 100}
-
-
-    //anaconda3/lib/python3.7/site-packages/sklearn/model_selection/_search.py:813: DeprecationWarning: The default of the `iid` parameter will change from True to False in version 0.22 and will be removed in 0.24. This will change numeric results when test-set sizes are unequal.
-      DeprecationWarning)
+    Optimal Parameters: {'criterion': 'gini', 'max_depth': None, 'min_samples_leaf': 3, 'min_samples_split': 5, 'n_estimators': 100}
 
 
 ### Interpret results 
@@ -786,7 +767,8 @@ Did tuning the hyperparameters of our random forest classifier improve model per
 
 
 ```python
-print("""
+print(
+    """
 Parameter tuning improved performance marginally, by about 6%. 
 This is good, but still falls short of the top testing score of the 
 Decision Tree Classifier by about 7%. Which model to ship to production 
@@ -797,7 +779,8 @@ since the ensemble approach makes it more resistant to variance in the data.
 If the data is fairly stable from batch to batch and not too noisy, 
 or if higher accuracy had a disproportionate effect on our business goals, 
 then I would go with the Decision Tree Classifier because it scored higher.
-""")
+"""
+)
 ```
 
     
@@ -823,12 +806,12 @@ Run the following cell to see the accuracy of the various grid search models on 
 dt_score = dt_grid_search.score(X_test, y_test)
 rf_score = rf_grid_search.score(X_test, y_test)
 
-print('Decision tree grid search: ', dt_score)
-print('Random forest grid search: ', rf_score)
+print("Decision tree grid search: ", dt_score)
+print("Random forest grid search: ", rf_score)
 ```
 
-    Decision tree grid search:  0.5625
-    Random forest grid search:  0.6225
+    Decision tree grid search:  0.5425
+    Random forest grid search:  0.6425
 
 
 So our random forest model performed the best! 
