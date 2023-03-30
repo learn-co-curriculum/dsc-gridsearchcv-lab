@@ -1,4 +1,3 @@
-
 # GridSearchCV - Lab
 
 ## Introduction
@@ -32,6 +31,7 @@ Run the cell below to import everything we'll need for this lab:
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+
 %matplotlib inline
 import seaborn as sns
 from sklearn.model_selection import train_test_split, GridSearchCV, cross_val_score
@@ -55,7 +55,6 @@ Great! Let's inspect our data. In the cell below, perform some basic exploratory
 
 ```python
 # Explore the dataset
-
 ```
 
 **_Question:_** Based on your findings during your exploratory data analysis, do you think that we need to do any sort of preprocessing on this dataset? Why or why not?
@@ -144,9 +143,7 @@ In the cell below:
 
 
 ```python
-dt_param_grid = {
- 
-}
+dt_param_grid = {}
 ```
 
 Now that we have our parameter grid set up, we can use `GridSearchCV`.  Before we do, let's briefly think about the particulars of this model. 
@@ -160,7 +157,9 @@ Calculate and print your answer in the cell below.
 
 ```python
 num_decision_trees = None
-print(f"Grid Search will have to search through {num_decision_trees} different permutations.")
+print(
+    f"Grid Search will have to search through {num_decision_trees} different permutations."
+)
 ```
 
 That's a lot of decision trees! Decision trees are generally pretty quick to train, but that isn't the case with every type of model we want to tune. Be aware that if you set a particularly large search space of parameters inside your parameter grid, then grid search could potentially take a very long time. 
@@ -176,7 +175,6 @@ Let's create our `GridSearchCV` object and fit it. In the cell below:
 dt_grid_search = None
 
 # Fit to the data
-
 ```
 
 ### Examine the best parameters
@@ -202,7 +200,6 @@ dt_gs_testing_score = None
 print(f"Mean Training Score: {dt_gs_training_score :.2%}")
 print(f"Mean Test Score: {dt_gs_testing_score :.2%}")
 print("Best Parameter Combination Found During Grid Search:")
-
 ```
 
 **_Question:_** What effect, if any, did our parameter tuning have on model performance? Will `GridSearchCV` always discover a perfectly (global) optimal set of parameters? Why or why not?
@@ -225,7 +222,9 @@ In the cell below:
 rf_clf = None
 mean_rf_cv_score = None
 
-print(f"Mean Cross Validation Score for Random Forest Classifier: {mean_rf_cv_score :.2%}")
+print(
+    f"Mean Cross Validation Score for Random Forest Classifier: {mean_rf_cv_score :.2%}"
+)
 ```
 
 Now that we have our baseline score, we'll create a parameter grid specific to our random forest classifier.  
@@ -243,9 +242,7 @@ Again -- in a real world situation, you will need to decide what parameters to t
 
 
 ```python
-rf_param_grid = {
-    
-}
+rf_param_grid = {}
 ```
 
 Great! Now that we have our parameter grid, we can grid search through it with our random forest. 
@@ -289,8 +286,8 @@ Run the following cell to see the accuracy of the various grid search models on 
 dt_score = dt_grid_search.score(X_test, y_test)
 rf_score = rf_grid_search.score(X_test, y_test)
 
-print('Decision tree grid search: ', dt_score)
-print('Random forest grid search: ', rf_score)
+print("Decision tree grid search: ", dt_score)
+print("Random forest grid search: ", rf_score)
 ```
 
 So our random forest model performed the best! 
